@@ -268,10 +268,52 @@ DET_<AppOrFunction>_<Check>
 
 ## Example
 
-REM_Security_DefenderFix_Device
-APP_Microsoft_OneDrive_Enterprise
-DET_OneDrive_Installed
+- REM_Security_DefenderFix_Device
+- APP_Microsoft_OneDrive_Enterprise
+- DET_OneDrive_Installed
 
+---
+
+# 🔗 Layered Application Dependencies (Win32 / INTUNEWIN)
+
+Custom Win32 applications packaged as .intunewin support dependency chaining, allowing applications to be installed in a defined execution order.
+
+## Purpose
+- Enforce prerequisite installations
+- Build layered deployments
+- Reduce installation failures due to missing components
+
+---
+
+## How It Works
+- Applications can be configured with dependencies in Intune
+- Dependent apps install before the primary app
+- Detection logic ensures each layer is validated before proceeding
+
+---
+
+## Example Execution Chain
+App A (Runtime / Dependency)
+   ↓
+App B (Core Application)
+   ↓
+App C (Configuration / Add-on)
+
+---
+
+## Practical Use Cases
+- Install Visual C++ / .NET before application deployment
+- Deploy base software before plugins or extensions
+- Layer security tools before enabling policies
+- Build complete environments through modular app stacks
+
+---
+
+## Key Considerations
+- Each dependency must have a valid detection method
+- Failures in dependencies will block downstream installs
+- Avoid overly complex chains to reduce troubleshooting difficulty
+- Keep dependencies modular and reusable
 
 ---
 
