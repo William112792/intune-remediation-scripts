@@ -135,10 +135,10 @@ Required Tool
 
 ### Recommended Structure
 /AppName/
-    install.ps1
-    uninstall.ps1
-    detection.ps1
-    binaries/
+-     install.ps1
+-     uninstall.ps1
+-     detection.ps1
+-     binaries/
 
 ### Key Insight
 Detection scripts can be updated independently
@@ -148,7 +148,7 @@ Detection scripts can be updated independently
 
 Vendors use different installer frameworks.
 
-Common Silent Switches
+Common Silent Switches:
 /S
 /S /v/qn
 /qn
@@ -156,7 +156,7 @@ Common Silent Switches
 /VERYSILENT
 /install /q /norestart
 /s /v"ACCEPT_EULA=Yes" /v/qn
-``` id="silent-switches"
+id="silent-switches"
 
 ---
 
