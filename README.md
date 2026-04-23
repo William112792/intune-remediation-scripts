@@ -149,13 +149,13 @@ Detection scripts can be updated independently
 Vendors use different installer frameworks.
 
 Common Silent Switches:
-/S
-/S /v/qn
-/qn
-/quiet /norestart
-/VERYSILENT
-/install /q /norestart
-/s /v"ACCEPT_EULA=Yes" /v/qn
+- /S
+- /S /v/qn
+- /qn
+- /quiet /norestart
+- /VERYSILENT
+- /install /q /norestart
+- /s /v"ACCEPT_EULA=Yes" /v/qn
 id="silent-switches"
 
 ---
