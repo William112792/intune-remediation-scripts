@@ -9,7 +9,7 @@ $executableVersMatch = If($(Get-Item -Path $executablet_path | select *).Version
 if($executableExists) {
   # Check Version of executable
   if($executableVersMatch) {
-    # Script Exists
+    # Latest Version
     write-output "TextExpander is on Latest or Newer Version"
     Exit 0
   } else {
