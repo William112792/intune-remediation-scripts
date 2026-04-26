@@ -5,18 +5,18 @@ $executableVersion = "8.4.2" #aka 254.8.4.209
 $executableExists = Test-Path $executablet_path
 $executableVersMatch = If($(Get-Item -Path $executablet_path | select *).VersionInfo.FileVersion -ge $executableVersion){$true}else{$false}
 
-# Checks for Scheduled Task and Script File
+# Checks executable is present
 if($executableExists) {
-  # Scheduled Task Exists
+  # Check Version of executable
   if($executableVersMatch) {
     # Script Exists
     write-output "TextExpander is on Latest or Newer Version"
     Exit 0
   } else {
-      # Missing Script
+      # Outdated version
       Exit 1
     }
 } else {
-  # Missing Scheduled Task
+  # Missing program completely
   Exit 1
 }
