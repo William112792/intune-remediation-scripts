@@ -1,30 +1,84 @@
 # 🛠️ Intune Remediation Scripts Framework
 
-This repository provides a structured approach to building, naming, and scaling **Microsoft Intune Remediation Scripts and Application Deployments**.
 
-The goal is to standardize how detection, remediation, and application logic are built so they are:
-- Reusable
-- Predictable
-- Scalable across environments
+
+This repository provides a structured approach to designing, building, and scaling **Microsoft Intune Remediation Scripts and Application Deployments**.
+
+The focus is on creating **modular, reusable automation components** that are:
+
+* Predictable
+* Scalable
+* Environment-agnostic
+* Easy to maintain
 
 ---
 
 # 👋 Overview
 
-Microsoft Intune automation is built around **modular execution logic**.
+Intune automation is built on **modular execution logic**.
 
-At its core:
+### Core Models
 
-## Remediation Scripts
-- Detection Script
-- Remediation Script
+## 🔧 Remediation Scripts
 
-## Applications
-- Detection
-- Install
-- Uninstall
+* Detection Script
+* Remediation Script
 
-Understanding how these components interact is critical to building reliable deployments.
+## 📦 Applications
+
+* Detection
+* Install
+* Uninstall
+
+Understanding how these components interact is critical for **reliable and scalable deployments**.
+
+---
+
+# 📂 Example Implementations
+
+These are **real working examples** from this repository.
+
+---
+
+## 📦 Application Example — TextExpander
+
+### Detection Scripts
+
+* https://github.com/William112792/intune-remediation-scripts/blob/main/Apps/TextExpander/DET_TextExpander_v8.4.2-v254.8.4.209.ps1
+* https://github.com/William112792/intune-remediation-scripts/blob/main/Apps/TextExpander-Alt/DET_ALT_TextExpander.ps1
+
+### Install / App Logic
+
+* https://github.com/William112792/intune-remediation-scripts/blob/main/Apps/TextExpander/APP_TextExpander.ps1
+* https://github.com/William112792/intune-remediation-scripts/blob/main/Apps/TextExpander-Alt/install.ps1
+
+### Uninstall Logic
+
+* https://github.com/William112792/intune-remediation-scripts/blob/main/Apps/TextExpander-Alt/uninstall.ps1
+
+---
+
+## 🔧 Remediation Example — MSPaint Removal
+
+### Detection
+
+* https://github.com/William112792/intune-remediation-scripts/blob/main/Rems/MSPaint/DET_Uninstall_MSPaint.ps1
+
+### Remediation
+
+* https://github.com/William112792/intune-remediation-scripts/blob/main/Rems/MSPaint/REM_Uninstall_MSPaint.ps1
+
+---
+
+## 🔧 Remediation Example — TextExpander Cleanup
+
+### Detection
+
+* https://github.com/William112792/intune-remediation-scripts/blob/main/Rems/TextExpander/DET_Removal_TextExpander.ps1
+
+### Remediation
+
+* https://github.com/William112792/intune-remediation-scripts/blob/main/Rems/TextExpander/REM_TextExpander.ps1
 
 ---
 
@@ -35,144 +89,192 @@ Understanding how these components interact is critical to building reliable dep
 ### Components
 
 #### 🔍 Detection Script
-- Evaluates system state
-- Returns:
-  - `Exit 0` → Compliant (No action)
-  - `Exit 1` → Non-compliant (Triggers remediation)
+
+* Evaluates system state
+* Returns:
+
+  * `Exit 0` → Compliant (no action)
+  * `Exit 1` → Non-compliant (triggers remediation)
 
 #### 🔧 Remediation Script
-- Executes corrective action
-- Equivalent to an **installation phase**
+
+* Executes corrective action
+* Functions as the **execution layer**
 
 ---
 
 ### Execution Flow
 
-Group Assignment → Detection Script → (If Failed) → Remediation Script
-
+```text id="rem-flow"
+Group Assignment
+   ↓
+Detection Script
+   ↓ (If Exit 1)
+Remediation Script
+```
 
 ---
 
 ### Important Notes
 
-- Execution is based on **assigned groups**
-- Runs on a **schedule (cadence)**
-- Scheduling is **not exact**
-  - Delays can occur
-  - Should not be relied on for strict timing
+* Execution depends on **group assignment**
+* Runs on a **scheduled cadence**
+* Timing is **eventually consistent**, not exact
 
 ---
 
 ## 2. Application Model
 
-Applications extend this model with an additional component:
-
 ### Components
 
-#### 🔍 Detection
-#### 📦 Install
-#### ❌ Uninstall
+* 🔍 Detection
+* 📦 Install
+* ❌ Uninstall
 
 ---
 
 ### Execution Flow
 
-Group Assignment → Detection → Install / Uninstall Decision
-
+```text id="app-flow"
+Group Assignment
+   ↓
+Detection
+   ↓
+Install / Uninstall Decision
+```
 
 ---
 
 ### Install Command Example
 
-powershell:
+```powershell id="install-cmd"
 %SystemRoot%\sysnative\WindowsPowerShell\v1.0\powershell.exe -executionpolicy bypass -command .\install.ps1
-
-### Uninstall Command Example
-
-powershell:
-%SystemRoot%\sysnative\WindowsPowerShell\v1.0\powershell.exe -executionpolicy bypass -command .\uninstall.ps1
-
-## Detection Behavior
-Executes only if assigned group matches
-Uses:
-PowerShell detection scripts (recommended)
-OR native Intune rule-based detection
-
-## 🧠 Detection Strategy
-PowerShell Detection (Recommended)
-### Benefits
-- Full customization
-- Complex logic support
-- Multi-condition evaluation
-
-### Native Detection Rules
-#### Benefits
-- Simpler setup
-- Faster configuration
-#### Limitations
-- Less flexible
-- Limited logic depth
-
-## 📦 Application Packaging
-MSI (Streamlined Deployment)
-### Advantages
-- Native support in Intune
-- Simple configuration
-### Limitations
-Cannot combine:
-- MST transforms
-- Additional dependencies
-### Common Parameter
-/qn
-
-## Win32 Apps (INTUNEWIN)
-Required Tool
-- IntuneWinAppUtil
-
-### Behavior
-- Packages folder into .intunewin
-- Extracts on endpoint before execution
-
-### Recommended Structure
-/AppName/
--     install.ps1
--     uninstall.ps1
--     detection.ps1
--     binaries/
-
-### Key Insight
-Detection scripts can be updated independently
-.intunewin does NOT need to be rebuilt for detection updates
-
-## 🔇 Silent Installation Strategy
-
-Vendors use different installer frameworks.
-
-Common Silent Switches:
-- /S
-- /S /v/qn
-- /qn
-- /quiet /norestart
-- /VERYSILENT
-- /install /q /norestart
-- /s /v"ACCEPT_EULA=Yes" /v/qn
-id="silent-switches"
+```
 
 ---
 
-### Installer Frameworks
+### Uninstall Command Example
 
-- Inno Setup
-- NSIS
-- MSI-based installers
+```powershell id="uninstall-cmd"
+%SystemRoot%\sysnative\WindowsPowerShell\v1.0\powershell.exe -executionpolicy bypass -command .\uninstall.ps1
+```
+
+---
+
+## 🔍 Detection Strategy
+
+### PowerShell Detection (Recommended)
+
+**Advantages**
+
+* Full logic control
+* Multi-condition validation
+* Environment-aware decisions
+
+---
+
+### Native Intune Detection Rules
+
+**Advantages**
+
+* Faster setup
+* Simpler configuration
+
+**Limitations**
+
+* Limited flexibility
+* Less scalable logic
+
+---
+
+# 📦 Application Packaging
+
+## MSI (Simple Deployments)
+
+**Pros**
+
+* Native Intune support
+* Minimal configuration
+
+**Cons**
+
+* Limited flexibility
+* Cannot easily chain dependencies
+
+**Common Parameter**
+
+```text id="msi-param"
+/qn
+```
+
+---
+
+## Win32 Apps (.intunewin)
+
+### Tool Required
+
+* IntuneWinAppUtil
+
+---
+
+### Behavior
+
+* Packages folder → `.intunewin`
+* Extracts on endpoint before execution
+
+---
+
+### Recommended Structure
+
+```text id="win32-structure"
+/AppName/
+  ├── install.ps1
+  ├── uninstall.ps1
+  ├── detection.ps1
+  └── binaries/
+```
+
+---
+
+### Key Insight
+
+Detection scripts can be updated independently
+→ No need to rebuild `.intunewin` for detection changes
+
+---
+
+# 🔇 Silent Installation Strategy
+
+Different vendors use different installer frameworks.
+
+---
+
+### Common Silent Switches
+
+```text id="silent-switches"
+/S
+/S /v/qn
+/qn
+/quiet /norestart
+/VERYSILENT
+/install /q /norestart
+/s /v"ACCEPT_EULA=Yes" /v/qn
+```
+
+---
+
+### Common Installer Types
+
+* MSI
+* Inno Setup
+* NSIS
 
 ---
 
 ### Tooling
 
-- Universal Silent Switch Finder (USSF)
-  - Helps identify potential installer types
-  - Not guaranteed accuracy
+* Universal Silent Switch Finder (USSF)
+  *(Helpful, not guaranteed accurate)*
 
 ---
 
@@ -180,202 +282,171 @@ id="silent-switches"
 
 ## Remediation Scripts
 
-- Run on defined schedule
-- Execution is **eventually consistent**, not exact
+* Run on defined schedule
+* Execution is **not real-time**
 
 ---
 
-## Tight Execution Requirements (Workaround)
+## Deterministic Execution (Workaround)
 
-For strict timing needs:
+For strict timing:
 
 ### Strategy
 
-1. Use Intune to deploy scripts/files
-2. Store locally on device
-3. Execute via:
-   - Task Scheduler
-   - Registry run keys
-   - Startup / Logon triggers
+1. Deploy script via Intune
+2. Store locally
+3. Execute using:
+
+   * Task Scheduler
+   * Registry run keys
+   * Startup / Logon triggers
 
 ---
 
 ### Result
 
-- Deterministic execution timing
-- Greater reliability for critical tasks
+* Predictable execution
+* Higher reliability for critical tasks
 
 ---
 
 # 🏗️ Advanced Use Case
 
-## Turning a Workstation into an Automation Node
+## Workstation as Automation Node
 
 ### Approach
 
-- Deploy scripts via Intune
-- Use Task Scheduler for execution
-- Run scripts continuously or on triggers
-
----
-
-### Optional Enhancements
-
-- Run scripts as services using:
-  - `INSTSRV`
-  - `SRVANY`
+* Deploy scripts via Intune
+* Trigger execution locally
+* Run continuously or event-based
 
 ---
 
 ### Use Cases
 
-- Cleanup automation
-- Monitoring tasks
-- Notification systems
-- Background processing
+* Cleanup automation
+* Monitoring
+* Background processing
+* Notification systems
 
 ---
 
 # ⚠️ Platform Limitation
 
-- Intune does NOT support Windows Server OS (currently)
-- Workaround:
-  - Use Windows endpoints to run server-like workloads
+* Intune does **not support Windows Server OS**
+
+### Workaround
+
+* Use Windows endpoints to simulate server workloads
 
 ---
 
 # 📛 Naming Convention Strategy
 
-Consistency is critical.
+Consistency enables scale.
 
 ---
 
-## Recommended Format
+## Recommended Formats
 
 ### Remediation Scripts
 
-REM_<Category><Purpose><Scope>
+```
+REM_<Category>_<Purpose>_<Scope>
+```
 
 ### Applications
 
-APP_<Vendor><Application><Version>
+```
+APP_<Vendor>_<Application>_<Version>
+```
 
 ### Detection Scripts
 
+```
 DET_<AppOrFunction>_<Check>
+```
 
 ---
 
-## Example
+## Examples
 
-- REM_Security_DefenderFix_Device
-- APP_Microsoft_OneDrive_Enterprise
-- DET_OneDrive_Installed
-
----
-
-# 🔗 Layered Application Dependencies (Win32 / INTUNEWIN)
-
-Custom Win32 applications packaged as .intunewin support dependency chaining, allowing applications to be installed in a defined execution order.
-
-## Purpose
-- Enforce prerequisite installations
-- Build layered deployments
-- Reduce installation failures due to missing components
+* REM_Security_DefenderFix_Device
+* APP_Microsoft_OneDrive_Enterprise
+* DET_OneDrive_Installed
 
 ---
 
-## How It Works
-- Applications can be configured with dependencies in Intune
-- Dependent apps install before the primary app
-- Detection logic ensures each layer is validated before proceeding
+# 🔗 Layered Application Dependencies
+
+Win32 apps support **dependency chaining**.
 
 ---
 
-## Example Execution Chain
-App A (Runtime / Dependency)
+## Execution Chain Example
+
+```text id="dependency-chain"
+App A (Dependency)
    ↓
-App B (Core Application)
+App B (Core App)
    ↓
-App C (Configuration / Add-on)
+App C (Configuration)
+```
 
 ---
 
-## Practical Use Cases
-- Install Visual C++ / .NET before application deployment
-- Deploy base software before plugins or extensions
-- Layer security tools before enabling policies
-- Build complete environments through modular app stacks
+## Use Cases
+
+* Runtime → Application → Plugin
+* Base software → Extensions
+* Security baseline → Policy enforcement
 
 ---
 
 ## Key Considerations
-- Each dependency must have a valid detection method
-- Failures in dependencies will block downstream installs
-- Avoid overly complex chains to reduce troubleshooting difficulty
-- Keep dependencies modular and reusable
 
----
-
-# 🔗 Dependency Strategy
-
-Define dependencies where possible:
-
-- Script dependencies
-- Application prerequisites
-- Execution order
-
----
-
-### Best Practices
-
-- Avoid hard dependencies when possible
-- Use detection logic to validate prerequisites
-- Fail gracefully with clear output
+* Each dependency requires detection logic
+* Failures block downstream installs
+* Keep chains modular and simple
 
 ---
 
 # 🧠 Design Philosophy
 
-This repository is built around:
-
-- Modular automation
-- Clear separation of detection vs execution
-- Scalable naming standards
-- Real-world deployment constraints
+* Modular automation design
+* Separation of detection vs execution
+* Scalable naming conventions
+* Built around real-world constraints
 
 ---
 
 # 🛠️ Planned Enhancements
 
-- Reusable script templates
-- Logging framework
-- Standardized output format
-- Graph API integration
-- Automated deployment pipelines
+* Script templates
+* Logging framework
+* Standardized output format
+* Graph API integration
+* Automated deployment pipelines
 
 ---
 
 # 📌 Key Takeaways
 
-- Detection drives everything
-- Remediation = controlled execution
-- Scheduling is not real-time
-- Packaging impacts flexibility
-- Naming conventions enable scale
+* Detection drives execution
+* Remediation = controlled enforcement
+* Scheduling is not precise
+* Packaging affects flexibility
+* Naming conventions enable scale
 
 ---
 
 # 👤 Author
 
-Billy Gordon  
-Endpoint Automation Engineer  
+Billy Gordon
+Endpoint Automation Engineer
 
-Focused on:
-- Scalable endpoint automation
-- Intune architecture and deployment
-- PowerShell-driven remediation frameworks
+Focus:
 
-
-
-
+* Endpoint automation (Intune)
+* PowerShell-driven frameworks
+* Scalable deployment architecture
