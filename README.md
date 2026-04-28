@@ -1,6 +1,7 @@
 # 🛠️ Intune Remediation Scripts Framework
 
-
+![Intune Automation](https://github.com/William112792/intune-remediation-scripts/blob/main/diagrams/intuneAutomation.png?raw=true)
+* Please Note: Diagram depicts specific flow process and can vary based on perspective and where groups are assigned
 
 This repository provides a structured approach to designing, building, and scaling **Microsoft Intune Remediation Scripts and Application Deployments**.
 
