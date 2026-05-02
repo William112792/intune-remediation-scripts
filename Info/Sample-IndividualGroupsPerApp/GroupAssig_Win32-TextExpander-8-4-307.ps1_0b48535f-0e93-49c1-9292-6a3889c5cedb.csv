@@ -1,0 +1,6 @@
+"Intent","Id","DisplayName","AppName","AppId"
+"uninstall","55981355-8f4a-4838-9d55-3fa1acdd8d48","SG-INTUNE-APP-QA-Devices","Win32-TextExpander-8-4-307.ps1","0b48535f-0e93-49c1-9292-6a3889c5cedb"
+"uninstall","9a486209-fb26-4803-a10c-663814cfac71","SG-INTUNE-APP-POC-Devices","Win32-TextExpander-8-4-307.ps1","0b48535f-0e93-49c1-9292-6a3889c5cedb"
+"required","575a4b09-9199-4c95-ab03-be769c990c03","SG-INTUNE-APP-PROD-Devices","Win32-TextExpander-8-4-307.ps1","0b48535f-0e93-49c1-9292-6a3889c5cedb"
+"uninstall","1bf8142e-3f49-41c3-b77e-ac1f652f14f6","SG-INTUNE-APP-PILOT-Devices","Win32-TextExpander-8-4-307.ps1","0b48535f-0e93-49c1-9292-6a3889c5cedb"
+"uninstall","cf291472-b3fa-4282-aabb-00f117d2831b","SG-INTUNE-APP-TOTAL-REMOVAL","Win32-TextExpander-8-4-307.ps1","0b48535f-0e93-49c1-9292-6a3889c5cedb"
